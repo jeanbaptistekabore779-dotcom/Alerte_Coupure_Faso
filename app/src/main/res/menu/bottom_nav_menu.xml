@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_alertes"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="Alertes" />
+    <item
+        android:id="@+id/nav_stats"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="Stats" />
+    <item
+        android:id="@+id/nav_sonabel"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="SONABEL" />
+    <item
+        android:id="@+id/nav_conseils"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="Conseils" />
+</menu>

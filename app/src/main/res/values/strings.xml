@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Alerte_Coupure_Faso</string>
+    <string name="communiqu_officiel_sonabel">Communiqué Officiel SONABEL</string>
+    <string name="titre_ex_travaux_de_maintenance">Titre (ex: Travaux de maintenance)</string>
+    <string name="message_d_taill">Message détaillé...</string>
+    <string name="publier">PUBLIER</string>
+    <string name="titre_du_communiqu">Titre du Communiqué</string>
+    <string name="le_contenu_du_message_officiel_appara_tra_ici">Le contenu du message officiel apparaîtra ici...</string>
+    <string name="_31_03_2026">31/03/2026</string>
+    <string name="partager">Partager</string>
+</resources>

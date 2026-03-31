@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/communiqu_officiel_sonabel"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/etTitreCommunique"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/titre_ex_travaux_de_maintenance"
+        android:inputType="textCapSentences" />
+
+    <EditText
+        android:id="@+id/etMessageCommunique"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/message_d_taill"
+        android:lines="4"
+        android:gravity="top"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnPublierOfficiel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/publier"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#004A99" />
+</LinearLayout>

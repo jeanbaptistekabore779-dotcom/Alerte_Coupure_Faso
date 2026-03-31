@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1051878982702",
+    "project_id": "alerte-coupure-faso",
+    "storage_bucket": "alerte-coupure-faso.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051878982702:android:25aa18bc0db6d28e784bbf",
+        "android_client_info": {
+          "package_name": "alerte.coupure.faso"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjgoCohvUzCR_gmFW7tXD21uKoI3f7Le4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051878982702:android:d8f9d07a533f0e21784bbf",
+        "android_client_info": {
+          "package_name": "com.jbk.alerte.coupure.faso"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjgoCohvUzCR_gmFW7tXD21uKoI3f7Le4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
