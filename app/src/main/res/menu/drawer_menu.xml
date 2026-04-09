@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="Accueil" />
+        <item
+            android:id="@+id/nav_notifications"
+            android:icon="@drawable/ic_notification"
+            android:title="Mes Alertes" />
+    </group>
+
+    <group
+        android:id="@+id/group_admin"
+        android:visible="false">
+        <item
+            android:id="@+id/nav_admin_panel"
+            android:icon="@drawable/ic_admin"
+            android:title="Panneau Administrateur" />
+    </group>
+
+    <item android:title="Compte">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_logout"
+                android:title="Déconnexion" />
+        </menu>
+    </item>
+
+</menu>

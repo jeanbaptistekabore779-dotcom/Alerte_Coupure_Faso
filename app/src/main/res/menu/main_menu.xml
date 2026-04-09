@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group_public">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@android:drawable/ic_menu_view"
+            android:title="Accueil" />
+        <item
+            android:id="@+id/nav_alertes"
+            android:icon="@android:drawable/ic_dialog_map"
+            android:title="Liste des coupures" />
+    </group>
+
+    <group
+        android:id="@+id/group_admin"
+        android:visible="false">
+        <item
+            android:id="@+id/nav_admin_dash"
+            android:icon="@android:drawable/ic_menu_manage"
+            android:title="Tableau de bord Admin" />
+        <item
+            android:id="@+id/nav_manage_users"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="Gérer les utilisateurs" />
+    </group>
+
+    <item android:title="Compte">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@android:drawable/ic_lock_power_off"
+                android:title="Déconnexion" />
+        </menu>
+    </item>
+
+</menu>

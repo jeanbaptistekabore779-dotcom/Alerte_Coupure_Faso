@@ -1,9 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Base.Theme.Alerte_Coupure_Faso" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">#0d6efd</item>       <item name="colorOnPrimary">#FFFFFF</item>
+
+        <item name="colorSecondary">#6c757d</item>      <item name="colorOnSecondary">#FFFFFF</item>
+
+        <item name="colorError">#dc3545</item>          <item name="android:statusBarColor">#0d6efd</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.Alerte_Coupure_Faso" parent="Base.Theme.Alerte_Coupure_Faso" />
+
+    <style name="ShapeAppearance.Alerte.Circle" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

@@ -20,7 +20,7 @@
             android:id="@+id/imgStatus"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:contentDescription="Icône de statut"
+            android:contentDescription="@string/ic_ne_de_statut"
             android:src="@android:drawable/ic_dialog_alert"
             app:tint="@android:color/holo_red_dark" />
 
@@ -35,7 +35,7 @@
                 android:id="@+id/txtZone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quartier (ex: Pissy)"
+                android:text="@string/quartier_ex_pissy"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black" />
@@ -44,7 +44,7 @@
                 android:id="@+id/txtType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Coupure d'électricité"
+                android:text="@string/coupure_d_lectricit"
                 android:textColor="@android:color/darker_gray" />
         </LinearLayout>
 
@@ -54,6 +54,16 @@
             android:layout_height="wrap_content"
             android:text="14:30"
             android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVoirCarte"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/voir_sur_carte"
+            android:textColor="#0D47A1"
+            app:icon="@android:drawable/ic_menu_mylocation"
+            app:iconTint="#0D47A1" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

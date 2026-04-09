@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="villes_burkina">
+        <item>Ouagadougou</item>
+        <item>Bobo-Dioulasso</item>
+        <item>Koudougou</item>
+        <item>Ouahigouya</item>
+        <item>Banfora</item>
+        <item>Kaya</item>
+        <item>Tenkodogo</item>
+        <item>Fada N\'Gourma</item>
+        <item>Dédougou</item>
+    </string-array>
+</resources>
