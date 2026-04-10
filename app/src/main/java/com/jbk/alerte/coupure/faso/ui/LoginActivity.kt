@@ -17,17 +17,28 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 1. Initialiser le Binding correctement
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Effet de zoom fluide au lancement
+        // 2. Vérifier si l'utilisateur est déjà connecté (Auto-Login)
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            // Si connecté, on vérifie le rôle et on redirige
+            verifierRoleEtRediriger(currentUser.uid)
+            // On ne continue pas le reste de l'initialisation du login
+            return
+        }
+
+        // 3. Animation du logo
         binding.imgLogo.animate()
-            .scaleX(1.1f) // Un zoom de 10% suffit souvent pour rester élégant
+            .scaleX(1.1f)
             .scaleY(1.1f)
             .setDuration(1200)
             .start()
 
-        // 1. Connexion
+        // 4. Gestion des clics
         binding.btnConnexion.setOnClickListener {
             val email = binding.etEmail.text.toString().trim()
             val passe = binding.etPassword.text.toString().trim()
@@ -39,14 +50,12 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // 2. Inscription
         binding.btnCreerCompte.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 
     private fun seConnecter(email: String, passe: String) {
-        // Ajout d'un petit message de patience
         Toast.makeText(this, "Vérification en cours...", Toast.LENGTH_SHORT).show()
 
         auth.signInWithEmailAndPassword(email, passe)
@@ -69,14 +78,18 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this, "Ce compte est suspendu.", Toast.LENGTH_LONG).show()
                         auth.signOut()
                     } else {
-                        val destination = if (role == "ADMIN") AdminDashboardActivity::class.java
-                        else UserDashboardActivity::class.java
-
+                        val destination = if (role == "ADMIN") {
+                            AdminDashboardActivity::class.java
+                        } else {
+                            AccueilActivity::class.java
+                        }
                         startActivity(Intent(this, destination))
                         finish()
                     }
                 } else {
-                    Toast.makeText(this, "Profil utilisateur introuvable.", Toast.LENGTH_SHORT).show()
+                    // Document inexistant : on envoie à l'accueil par défaut
+                    startActivity(Intent(this, AccueilActivity::class.java))
+                    finish()
                 }
             }
             .addOnFailureListener { e ->

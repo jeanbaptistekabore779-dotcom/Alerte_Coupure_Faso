@@ -7,53 +7,54 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
-import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.ktx.Firebase
 import com.jbk.alerte.coupure.faso.R
 import com.jbk.alerte.coupure.faso.adapters.AlerteAdapter
 import com.jbk.alerte.coupure.faso.adapters.UserAdapter
 import com.jbk.alerte.coupure.faso.databinding.ActivityAdminDashboardBinding
 import com.jbk.alerte.coupure.faso.models.Alerte
 import com.jbk.alerte.coupure.faso.models.User
-import com.squareup.picasso.Picasso
-import java.util.Calendar
 
 class AdminDashboardActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdminDashboardBinding
     private lateinit var alerteAdapter: AlerteAdapter
-    // On déclare enfin l'adapter utilisateur
     private lateinit var userAdapter: UserAdapter
     private val db = FirebaseFirestore.getInstance()
+    private val auth = Firebase.auth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdminDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // --- CONFIGURATION TOOLBAR ---
+        // Configuration Toolbar
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = ""
+        supportActionBar?.title = "Tableau de Bord Admin"
+
+        // Configuration des onglets
+        binding.tabLayout.removeAllTabs()
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Alertes"))
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Citoyens"))
 
         setupRecyclerView()
         setupTabs()
         setupInteractions()
 
-        // --- CHARGEMENT INITIAL ---
-        chargerAlertes()
-        chargerStatsDuJour()
-        compterUtilisateurs()
+        chargerStatsEtProbabilites()
         chargerProfilAdmin()
     }
 
     private fun setupRecyclerView() {
         binding.rvAdmin.layoutManager = LinearLayoutManager(this)
 
-        // Initialisation de l'adapter Alertes
+        // Adapter pour les Alertes
         alerteAdapter = AlerteAdapter(
             listeTotale = mutableListOf(),
             isAdmin = true,
@@ -61,15 +62,63 @@ class AdminDashboardActivity : AppCompatActivity() {
             onItemLongClick = { alerte -> afficherDialogueSuppression(alerte) }
         )
 
-        // Initialisation de l'adapter Utilisateurs (C'est ce qui manquait !)
+        // Adapter pour les Utilisateurs (Citoyens)
         userAdapter = UserAdapter(
             users = mutableListOf(),
             onBlockClick = { user -> toggleUserBlockStatus(user) },
             onDeleteClick = { user -> afficherDialogueSuppressionUser(user) }
         )
 
-        // Par défaut, on affiche l'adapter des alertes
         binding.rvAdmin.adapter = alerteAdapter
+        chargerAlertes()
+    }
+
+    private fun chargerStatsEtProbabilites() {
+        // Stats Alertes
+        db.collection("alertes")
+            .whereEqualTo("status", "EN COURS")
+            .addSnapshotListener { snapshots, _ ->
+                val count = snapshots?.size() ?: 0
+                binding.txtCountCoupures.text = count.toString()
+            }
+
+        // Stats Citoyens
+        db.collection("users")
+            .addSnapshotListener { snapshots, _ ->
+                val count = snapshots?.size() ?: 0
+                binding.txtCountUsers.text = count.toString()
+            }
+    }
+
+    private fun chargerAlertes() {
+        binding.swipeRefresh.isRefreshing = true
+        db.collection("alertes")
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshots, _ ->
+                binding.swipeRefresh.isRefreshing = false
+                if (snapshots != null) {
+                    val list = snapshots.documents.mapNotNull { doc ->
+                        doc.toObject(Alerte::class.java)?.apply { id = doc.id }
+                    }
+                    actualiserVisibilite(list.isEmpty())
+                    alerteAdapter.updateData(list)
+                }
+            }
+    }
+
+    private fun chargerUtilisateurs() {
+        binding.swipeRefresh.isRefreshing = true
+        db.collection("users")
+            .addSnapshotListener { snapshots, _ ->
+                binding.swipeRefresh.isRefreshing = false
+                if (snapshots != null) {
+                    val list = snapshots.documents.mapNotNull { doc ->
+                        doc.toObject(User::class.java)?.apply { uid = doc.id }
+                    }
+                    actualiserVisibilite(list.isEmpty())
+                    userAdapter.updateData(list)
+                }
+            }
     }
 
     private fun setupTabs() {
@@ -93,143 +142,83 @@ class AdminDashboardActivity : AppCompatActivity() {
 
     private fun setupInteractions() {
         binding.swipeRefresh.setOnRefreshListener {
-            // On rafraîchit selon l'onglet actif
-            if (binding.tabLayout.selectedTabPosition == 0) chargerAlertes()
-            else chargerUtilisateurs()
-
-            chargerStatsDuJour()
-            compterUtilisateurs()
+            if (binding.tabLayout.selectedTabPosition == 0) chargerAlertes() else chargerUtilisateurs()
+            chargerStatsEtProbabilites()
         }
 
         binding.fabAdd.setOnClickListener {
             startActivity(Intent(this, AddAlerteActivity::class.java))
         }
-    }
 
-    // --- LOGIQUE ALERTES ---
-
-    private fun chargerAlertes() {
-        db.collection("alertes")
-            .orderBy("timestamp", Query.Direction.DESCENDING)
-            .addSnapshotListener { snapshots, _ ->
-                binding.swipeRefresh.isRefreshing = false
-
-                if (snapshots != null) {
-                    val list = mutableListOf<Alerte>()
-                    for (doc in snapshots.documents) {
-                        val alerte = doc.toObject(Alerte::class.java)
-                        if (alerte != null) {
-                            alerte.id = doc.id
-                            list.add(alerte)
-                        }
-                    }
-
-                    actualiserVisibilite(list.isEmpty())
-                    alerteAdapter.updateData(list)
+        // Action de déconnexion si tu as un bouton
+        binding.imgAdminProfile.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Déconnexion")
+                .setMessage("Voulez-vous quitter la session admin ?")
+                .setPositiveButton("Oui") { _, _ ->
+                    auth.signOut()
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
                 }
-            }
-    }
-
-    // --- LOGIQUE UTILISATEURS ---
-
-    private fun chargerUtilisateurs() {
-        db.collection("users").addSnapshotListener { snapshots, _ ->
-            binding.swipeRefresh.isRefreshing = false
-            if (snapshots != null) {
-                val list = snapshots.toObjects(User::class.java)
-                for (i in list.indices) {
-                    list[i].uid = snapshots.documents[i].id
-                }
-
-                actualiserVisibilite(list.isEmpty())
-                userAdapter.updateData(list)
-            }
+                .setNegativeButton("Non", null).show()
         }
+    }
+
+    // --- DIALOGUES ---
+    private fun afficherDialogueStatut(alerte: Alerte) {
+        val options = arrayOf("EN COURS", "RÉSOLU", "MAINTENANCE")
+        AlertDialog.Builder(this)
+            .setTitle("Changer le statut")
+            .setItems(options) { _, which ->
+                db.collection("alertes").document(alerte.id).update("status", options[which])
+            }.show()
     }
 
     private fun toggleUserBlockStatus(user: User) {
         val nouveauStatut = !user.estBloque
-        db.collection("users").document(user.uid)
-            .update("estBloque", nouveauStatut)
+        db.collection("users").document(user.uid).update("estBloque", nouveauStatut)
             .addOnSuccessListener {
-                val action = if (nouveauStatut) "bloqué" else "débloqué"
-                Toast.makeText(this, "Utilisateur $action", Toast.LENGTH_SHORT).show()
+                val msg = if (nouveauStatut) "Citoyen bloqué" else "Citoyen débloqué"
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
-    }
-
-    // --- DIALOGUES ---
-
-    private fun afficherDialogueStatut(alerte: Alerte) {
-        val options = arrayOf("EN COURS", "RÉSOLU", "MAINTENANCE")
-        AlertDialog.Builder(this)
-            .setTitle("Mise à jour État")
-            .setItems(options) { _, which ->
-                db.collection("alertes").document(alerte.id).update("status", options[which])
-                    .addOnSuccessListener { Toast.makeText(this, "Statut mis à jour", Toast.LENGTH_SHORT).show() }
-            }.show()
-    }
-
-    private fun afficherDialogueSuppression(alerte: Alerte) {
-        AlertDialog.Builder(this)
-            .setTitle("Suppression")
-            .setMessage("Voulez-vous supprimer l'alerte à ${alerte.quartier} ?")
-            .setPositiveButton("Supprimer") { _, _ ->
-                db.collection("alertes").document(alerte.id).delete()
-            }
-            .setNegativeButton("Annuler", null).show()
     }
 
     private fun afficherDialogueSuppressionUser(user: User) {
         AlertDialog.Builder(this)
-            .setTitle("Supprimer l'utilisateur")
-            .setMessage("Supprimer ${user.nom} ?")
-            .setPositiveButton("Supprimer") { _, _ ->
+            .setTitle("Supprimer")
+            .setMessage("Supprimer définitivement ${user.nom} ?")
+            .setPositiveButton("Oui") { _, _ ->
                 db.collection("users").document(user.uid).delete()
             }
-            .setNegativeButton("Annuler", null).show()
+            .setNegativeButton("Non", null).show()
     }
 
-    // --- UTILITAIRES ---
+    private fun afficherDialogueSuppression(alerte: Alerte) {
+        AlertDialog.Builder(this)
+            .setTitle("Supprimer l'alerte")
+            .setPositiveButton("Oui") { _, _ ->
+                db.collection("alertes").document(alerte.id).delete()
+            }
+            .setNegativeButton("Non", null).show()
+    }
 
     private fun actualiserVisibilite(isEmpty: Boolean) {
-        if (isEmpty) {
-            binding.layoutEmpty.visibility = View.VISIBLE
-            binding.rvAdmin.visibility = View.GONE
-        } else {
-            binding.layoutEmpty.visibility = View.GONE
-            binding.rvAdmin.visibility = View.VISIBLE
-        }
+        binding.layoutEmpty.visibility = if (isEmpty) View.VISIBLE else View.GONE
+        binding.rvAdmin.visibility = if (isEmpty) View.GONE else View.VISIBLE
     }
 
     private fun chargerProfilAdmin() {
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user?.photoUrl != null) {
-            Picasso.get().load(user.photoUrl).placeholder(R.drawable.ic_admin_profile).into(binding.imgAdminProfile)
-        }
-    }
-
-    private fun chargerStatsDuJour() {
-        val debut = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-        }.time
-
-        db.collection("alertes")
-            .whereGreaterThanOrEqualTo("timestamp", Timestamp(debut))
-            .addSnapshotListener { snapshots, _ ->
-                binding.txtCountCoupures.text = (snapshots?.size() ?: 0).toString()
-            }
-    }
-
-    private fun compterUtilisateurs() {
-        db.collection("users").addSnapshotListener { snapshots, _ ->
-            binding.txtCountUsers.text = (snapshots?.size() ?: 0).toString()
+        val user = auth.currentUser ?: return
+        db.collection("users").document(user.uid).get().addOnSuccessListener { doc ->
+            val url = doc.getString("photoUrl")
+            if (!url.isNullOrEmpty()) Glide.with(this).load(url).circleCrop().into(binding.imgAdminProfile)
         }
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressedDispatcher.onBackPressed()
+        finish()
         return true
     }
 }

@@ -1,37 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Alerte_Coupure_Faso</string>
-    <string name="communiqu_officiel_sonabel">Communiqué Officiel SONABEL</string>
-    <string name="titre_ex_travaux_de_maintenance">Titre (ex: Travaux de maintenance)</string>
-    <string name="message_d_taill">Message détaillé...</string>
-    <string name="publier">PUBLIER</string>
-    <string name="titre_du_communiqu">Titre du Communiqué</string>
-    <string name="le_contenu_du_message_officiel_appara_tra_ici">Le contenu du message officiel</string>
-    <string name="_31_03_2026">31/03/2026</string>
-    <string name="partager">Partager</string>
+    <string name="app_name">Alerte Coupure Faso</string>
     <string name="todo">TODO</string>
-    <string name="publier_un_communiqu">Publier un communiqué</string>
-    <string name="signaler_un_v_nement">Signaler un événement</string>
-    <string name="nom_du_quartier_ex_pissy_wemtenga">Nom du quartier (ex: Pissy, Wemtenga)</string>
-    <string name="pas_encore_de_compte_s_inscrire">Pas encore de compte ? S\'inscrire</string>
-    <string name="se_connecter">Se Connecter</string>
-    <string name="mot_de_passe">Mot de passe</string>
-    <string name="email">Email</string>
+    <string name="_31_03_2026">31/03/2026</string>
+
+    <string name="navigation_drawer_open">Ouvrir le menu de navigation</string>
+    <string name="navigation_drawer_close">Fermer le menu de navigation</string>
+    <string name="salut_format">Salut %1$s</string>
+
     <string name="connectez_vous_pour_signaler_ou_voir_les_alertes">Connectez-vous pour signaler ou voir les alertes</string>
-    <string name="alerte_coupure_faso">Alerte Coupure Faso</string>
+    <string name="email">Email</string>
+    <string name="mot_de_passe">Mot de passe</string>
+    <string name="se_connecter">Se Connecter</string>
+    <string name="pas_encore_de_compte_s_inscrire">Pas encore de compte ? S\'inscrire</string>
     <string name="cr_er_un_compte">Créer un compte</string>
     <string name="s_inscrire">S\'inscrire</string>
-    <string name="label_date">Le : %1$s</string>
-    <string name="date_inconnue">Date inconnue</string>
+
+    <string name="alerte_coupure_faso">Alerte Coupure Faso</string>
+    <string name="signaler_un_v_nement">Signaler un événement</string>
     <string name="signaler_une_nouvelle_coupure">Signaler une nouvelle coupure</string>
-    <string name="tableau_de_bord_sonabel">Tableau de Bord SONABEL</string>
-    <string name="publier_communiqu">Publier Communiqué</string>
     <string name="ajouter_une_coupure">Ajouter une coupure</string>
+    <string name="nom_du_quartier_ex_pissy_wemtenga">Nom du quartier (ex: Pissy, Wemtenga)</string>
+    <string name="quartier_ex_pissy">Quartier (ex: Pissy)</string>
+    <string name="coupure_d_lectricit">Coupure d\'électricité</string>
+    <string name="partager">Partager</string>
+    <string name="voir_sur_carte">Voir sur carte</string>
+    <string name="ic_ne_de_statut">Icône de statut</string>
+
     <string name="alerte_status_format">Statut : %1$s (%2$s)</string>
     <string name="alerte_date_format">Signalé le : %1$s</string>
+    <string name="label_date">Le : %1$s</string>
+    <string name="date_inconnue">Date inconnue</string>
     <string name="zone_inconnue">Zone inconnue</string>
-    <string name="coupure_d_lectricit">Coupure d\'électricité</string>
-    <string name="quartier_ex_pissy">Quartier (ex: Pissy)</string>
-    <string name="ic_ne_de_statut">Icône de statut</string>
-    <string name="voir_sur_carte">Voir sur carte</string>
+
+    <string name="tableau_de_bord_sonabel">Tableau de Bord SONABEL</string>
+    <string name="communiqu_officiel_sonabel">Communiqué Officiel SONABEL</string>
+    <string name="publier_un_communiqu">Publier un communiqué</string>
+    <string name="publier_communiqu">Publier Communiqué</string>
+    <string name="publier">PUBLIER</string>
+    <string name="titre_du_communiqu">Titre du Communiqué</string>
+    <string name="titre_ex_travaux_de_maintenance">Titre (ex: Travaux de maintenance)</string>
+    <string name="message_d_taill">Message détaillé...</string>
+    <string name="le_contenu_du_message_officiel_appara_tra_ici">Le contenu du message officiel</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="panneau_administrateur">Panneau Administrateur</string>
+    <string name="compte">Compte</string>
+    <string name="d_connexion">Déconnexion</string>
+    <string name="mes_alertes">Mes Alertes</string>
 </resources>

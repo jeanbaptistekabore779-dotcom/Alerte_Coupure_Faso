@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.jbk.alerte.coupure.faso.models.Signalement
 
-@Database(entities = [Signalement::class], version = 1, exportSchema = false)
+@Database(entities = [Signalement::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class) // On ajoute nos convertisseurs ici
 abstract class AppDatabase : RoomDatabase() {
 

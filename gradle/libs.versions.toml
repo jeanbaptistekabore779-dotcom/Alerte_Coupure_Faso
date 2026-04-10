@@ -8,7 +8,8 @@ material = "1.11.0"
 constraintlayout = "2.1.4"
 firebaseBom = "33.0.0"
 room = "2.6.1"
-activity = "1.8.2" # Baissé à 1.8.2 pour une meilleure stabilité avec Kotlin 1.9
+activity = "1.8.2"
+activityVersion = "1.13.0" # Baissé à 1.8.2 pour une meilleure stabilité avec Kotlin 1.9
 
 [libraries]
 # Bibliothèques AndroidX et Material
@@ -27,6 +28,7 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activityVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

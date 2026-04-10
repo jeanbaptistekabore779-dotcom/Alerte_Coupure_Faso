@@ -6,6 +6,7 @@ data class Alerte(
     var id: String = "",
     val quartier: String = "",
     val type: String = "",
+    val ville: String = "Ouagadougou",
     val description: String = "",
     val status: String = "EN COURS",
     val timestamp: Timestamp? = null,

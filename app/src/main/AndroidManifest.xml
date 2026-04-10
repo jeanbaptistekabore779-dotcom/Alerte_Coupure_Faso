@@ -15,15 +15,6 @@
         android:theme="@style/Theme.Alerte_Coupure_Faso">
 
         <activity
-            android:name=".ui.AccueilActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.AddAlerteActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.GestionUsersActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.LoginActivity"
             android:exported="true">
             <intent-filter>
@@ -33,16 +24,24 @@
         </activity>
 
         <activity
-            android:name=".ui.UserDashboardActivity"
-            android:exported="false" />
+            android:name=".ui.AccueilActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".ui.AdminDashboardActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.AddAlerteActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ui.RegisterActivity"
             android:exported="false" />
+
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.GestionUsersActivity"
             android:exported="false" />
 
         <service
@@ -52,6 +51,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
     </application>
 
 </manifest>

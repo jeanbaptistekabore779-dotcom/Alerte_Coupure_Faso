@@ -1,5 +1,6 @@
 package com.jbk.alerte.coupure.faso.ui
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -13,11 +14,10 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.jbk.alerte.coupure.faso.databinding.ActivityRegisterBinding
 
-
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
-    private var photoUri: Uri? = null // Variable indispensable
+    private var photoUri: Uri? = null
 
     // 1. Déclencheur pour choisir une image
     private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -32,7 +32,6 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Tout le code d'écoute doit être ICI dans le onCreate.
         binding.btnChoisirPhoto.setOnClickListener {
             pickImage.launch("image/*")
         }
@@ -57,35 +56,61 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun creerCompte(email: String, passe: String, ville: String, nom: String, prenom: String) {
+        val progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("Création du compte en cours...")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
         Firebase.auth.createUserWithEmailAndPassword(email, passe)
             .addOnSuccessListener { authResult ->
                 val uid = authResult.user?.uid ?: return@addOnSuccessListener
 
                 if (photoUri != null) {
-                    uploadPhoto(uid, email, ville, nom, prenom)
+                    uploadPhoto(uid, email, ville, nom, prenom, progressDialog)
                 } else {
-                    enregistrerProfil(uid, email, ville, nom, prenom, null)
+                    enregistrerProfil(uid, email, ville, nom, prenom, null, progressDialog)
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Erreur Auth : ${e.message}", Toast.LENGTH_SHORT).show()
+                progressDialog.dismiss() // ✅ Fermer si erreur
+                Toast.makeText(this, "Erreur Auth : ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
             }
     }
 
-    private fun uploadPhoto(uid: String, email: String, ville: String, nom: String, prenom: String) {
+    private fun uploadPhoto(
+        uid: String,
+        email: String,
+        ville: String,
+        nom: String,
+        prenom: String,
+        progressDialog: ProgressDialog
+    ) {
         val storageRef = Firebase.storage.reference.child("profiles/$uid.jpg")
         photoUri?.let { uri ->
-            storageRef.putFile(uri).addOnSuccessListener {
-                storageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
-                    enregistrerProfil(uid, email, ville, nom, prenom, downloadUrl.toString())
+            storageRef.putFile(uri)
+                .addOnSuccessListener {
+                    storageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+                        enregistrerProfil(uid, email, ville, nom, prenom, downloadUrl.toString(), progressDialog)
+                    }
                 }
-            }
+                .addOnFailureListener { e ->
+                    progressDialog.dismiss() // ✅ Fermer si l'image ne monte pas
+                    Toast.makeText(this, "Erreur Image : ${e.message}", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 
-    private fun enregistrerProfil(uid: String, email: String, ville: String, nom: String, prenom: String, url: String?) {
-        // Détermination automatique du rôle pour la SONABEL
+    private fun enregistrerProfil(
+        uid: String,
+        email: String,
+        ville: String,
+        nom: String,
+        prenom: String,
+        url: String?,
+        progressDialog: ProgressDialog
+    ) {
         val role = if (email.endsWith("@sonabel.bf")) "ADMIN" else "USER"
+        val finalPhotoUrl = url ?: ""
 
         val profile = hashMapOf(
             "uid" to uid,
@@ -94,18 +119,19 @@ class RegisterActivity : AppCompatActivity() {
             "email" to email,
             "role" to role,
             "ville" to ville,
-            "photoUrl" to url,
-            "estBloque" to false, // Important pour ton système de gestion
-            "timestamp" to FieldValue.serverTimestamp() // Utilise le temps serveur
+            "photoUrl" to finalPhotoUrl,
+            "estBloque" to false,
+            "timestamp" to FieldValue.serverTimestamp()
         )
 
-        // Utilisation directe de Firebase.firestore pour éviter l'erreur "db"
         Firebase.firestore.collection("users").document(uid).set(profile)
             .addOnSuccessListener {
+                progressDialog.dismiss() // ✅ Fermer enfin le dialogue !
                 Toast.makeText(this, "Compte créé avec succès !", Toast.LENGTH_SHORT).show()
                 redirigerSelonRole(role)
             }
-            .addOnFailureListener { e: Exception ->
+            .addOnFailureListener { e ->
+                progressDialog.dismiss() // ✅ Fermer si Firestore échoue
                 Toast.makeText(this, "Erreur Firestore : ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
@@ -114,11 +140,10 @@ class RegisterActivity : AppCompatActivity() {
         val destination = if (role == "ADMIN") {
             AdminDashboardActivity::class.java
         } else {
-            // Assure-toi que cette classe existe bien dans ton package ui
+            // Remplace par ta classe d'accueil utilisateur (ex: AccueilActivity)
             UserDashboardActivity::class.java
         }
         startActivity(Intent(this, destination))
         finishAffinity()
     }
-
 }

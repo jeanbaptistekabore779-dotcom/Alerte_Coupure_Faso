@@ -6,10 +6,16 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
             android:title="Accueil" />
+
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/ic_dashboard"
+            android:title="Dashboard" />
+
         <item
             android:id="@+id/nav_notifications"
             android:icon="@drawable/ic_notification"
-            android:title="Mes Alertes" />
+            android:title="@string/mes_alertes" />
     </group>
 
     <group
@@ -18,15 +24,20 @@
         <item
             android:id="@+id/nav_admin_panel"
             android:icon="@drawable/ic_admin"
-            android:title="Panneau Administrateur" />
+            android:title="@string/panneau_administrateur" />
     </group>
 
-    <item android:title="Compte">
+    <item android:title="@string/compte">
         <menu>
+            <item
+                android:id="@+id/nav_profile"
+                android:icon="@drawable/ic_person"
+                android:title="Mon Profil" />
+
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_logout"
-                android:title="Déconnexion" />
+                android:title="@string/d_connexion" />
         </menu>
     </item>
 
