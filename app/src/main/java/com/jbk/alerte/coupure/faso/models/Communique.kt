@@ -4,6 +4,7 @@ data class Communique(
     var id: String = "",
     val titre: String = "",
     val message: String = "",
-    val timestamp: Long = 0,
+    val timestamp: Long = System.currentTimeMillis(),
     val auteur: String = "SONABEL"
+
 )

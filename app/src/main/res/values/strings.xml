@@ -47,4 +47,8 @@
     <string name="compte">Compte</string>
     <string name="d_connexion">Déconnexion</string>
     <string name="mes_alertes">Mes Alertes</string>
+    <style name="Theme.Alerte_Coupure_Faso.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

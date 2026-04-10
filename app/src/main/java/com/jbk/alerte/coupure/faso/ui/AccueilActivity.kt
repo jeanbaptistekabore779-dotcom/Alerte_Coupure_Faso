@@ -2,6 +2,7 @@ package com.jbk.alerte.coupure.faso.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -23,51 +24,56 @@ class AccueilActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityAccueilBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // 🛡️ ÉTAPE 1 : Vérification de la session
         val user = auth.currentUser
         if (user == null) {
             redirigerVersLogin()
             return
         }
 
-        // 🛡️ ÉTAPE 2 : Vérification du rôle (Admin ou User)
-        // Cela évite qu'un admin reste coincé sur l'interface citoyenne
-        verifierRoleEtRediriger(user.uid)
-
-        binding = ActivityAccueilBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setupNavigationDrawer()
-        configurerHeader()
-
-        if (savedInstanceState == null) {
-            remplacerFragment(HomeFragment())
-            supportActionBar?.title = "Accueil"
-        }
+        // 🛡️ Anti-clignotement
+        binding.drawerLayout.visibility = View.INVISIBLE
+        verifierRoleEtInitialiser(user.uid, savedInstanceState)
 
         setupOnBackPressed()
     }
 
-    private fun verifierRoleEtRediriger(uid: String) {
+    private fun verifierRoleEtInitialiser(uid: String, savedInstanceState: Bundle?) {
         db.collection("users").document(uid).get()
             .addOnSuccessListener { document ->
                 val role = document.getString("role")
+
                 if (role == "ADMIN") {
-                    // Si c'est l'admin, on l'envoie vers son dashboard spécial
-                    val intent = Intent(this, AdminDashboardActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, AdminDashboardActivity::class.java))
                     finish()
+                } else {
+                    binding.drawerLayout.visibility = View.VISIBLE
+                    chargerComposantsInterface(savedInstanceState)
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Erreur de vérification du profil", Toast.LENGTH_SHORT).show()
+                binding.drawerLayout.visibility = View.VISIBLE
+                chargerComposantsInterface(savedInstanceState)
+                Toast.makeText(this, "Erreur réseau", Toast.LENGTH_SHORT).show()
             }
     }
 
+    private fun chargerComposantsInterface(savedInstanceState: Bundle?) {
+        setupNavigationDrawer()
+        configurerHeader()
+
+        if (savedInstanceState == null) {
+            // Assure-toi que HomeFragment existe bien dans ton dossier ui/fragments
+            remplacerFragment(HomeFragment())
+            supportActionBar?.title = "Accueil"
+            binding.navigationView.setCheckedItem(R.id.nav_home)
+        }
+    }
+
     private fun setupNavigationDrawer() {
-        // Correction : On récupère la toolbar via le binding du contenu inclus
-        val toolbar = binding.mainContent.root.findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        val toolbar = binding.mainContent.root.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         val toggle = ActionBarDrawerToggle(
@@ -83,6 +89,19 @@ class AccueilActivity : AppCompatActivity() {
                     remplacerFragment(HomeFragment())
                     supportActionBar?.title = "Accueil"
                 }
+                R.id.nav_dashboard -> {
+                    lancerDashboardDynamique()
+                }
+                // --- AJOUTE CETTE PARTIE POUR LES NOTIFICATIONS ---
+                R.id.nav_notifications -> {
+                    // Si tu as créé un NotificationsFragment, décommente la ligne d'après :
+                    // remplacerFragment(NotificationsFragment())
+                    // supportActionBar?.title = "Mes Alertes"
+
+                    // En attendant, on peut juste faire un petit message :
+                    Toast.makeText(this, "Affichage des alertes de votre zone", Toast.LENGTH_SHORT).show()
+                }
+                // ---------------------------------------------------
                 R.id.nav_profile -> {
                     remplacerFragment(ProfileFragment())
                     supportActionBar?.title = "Mon Profil"
@@ -97,36 +116,43 @@ class AccueilActivity : AppCompatActivity() {
         }
     }
 
+    private fun lancerDashboardDynamique() {
+        val uid = auth.currentUser?.uid ?: return
+        db.collection("users").document(uid).get().addOnSuccessListener { doc ->
+            val role = doc.getString("role") ?: "USER"
+            val intent = if (role == "ADMIN") {
+                Intent(this, AdminDashboardActivity::class.java)
+            } else {
+                Intent(this, UserDashboardActivity::class.java)
+            }
+            startActivity(intent)
+        }
+    }
+
     private fun remplacerFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
             .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null) // ✅ AJOUT : Permet de revenir en arrière avec le bouton du téléphone
             .commit()
     }
 
     private fun configurerHeader() {
-        // 1. On récupère le NavigationView
-        val navView = binding.navigationView
-
-        // 2. On récupère la vue du Header (l'index 0 est le premier header)
-        val headerView = navView.getHeaderView(0)
-
-        // 3. On cherche le TextView à l'INTÉRIEUR du headerView
+        val headerView = binding.navigationView.getHeaderView(0)
         val tvNomHeader = headerView?.findViewById<TextView>(R.id.tvNomUser)
-
         val user = auth.currentUser
-        if (user != null && tvNomHeader != null) { // On vérifie que tvNomHeader n'est pas NULL
-            db.collection("users").document(user.uid).get()
-                .addOnSuccessListener { doc ->
-                    if (doc.exists()) {
-                        val nom = doc.getString("prenom") ?: user.email?.substringBefore("@")
-                        // ✅ On utilise le "?" pour être sûr de ne pas planter
-                        tvNomHeader.text = nom?.replaceFirstChar { it.uppercase() }
-                    }
+
+        if (user != null && tvNomHeader != null) {
+            db.collection("users").document(user.uid).get().addOnSuccessListener { doc ->
+                if (doc.exists()) {
+                    val nom = doc.getString("prenom") ?: user.email?.substringBefore("@")
+                    tvNomHeader.text = nom?.replaceFirstChar { it.uppercase() }
+
+                    val role = doc.getString("role")
+                    // Cacher le menu admin s'il existe dans le drawer_menu.xml
+                    binding.navigationView.menu.findItem(R.id.nav_admin_panel)?.isVisible = (role == "ADMIN")
                 }
-                .addOnFailureListener {
-                    tvNomHeader.text = user.email?.substringBefore("@")
-                }
+            }
         }
     }
 
@@ -142,6 +168,9 @@ class AccueilActivity : AppCompatActivity() {
             override fun handleOnBackPressed() {
                 if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
+                } else if (supportFragmentManager.backStackEntryCount > 0) {
+                    // ✅ AJOUT : Si on est dans un fragment, on pop le fragment au lieu de quitter
+                    supportFragmentManager.popBackStack()
                 } else {
                     isEnabled = false
                     onBackPressedDispatcher.onBackPressed()

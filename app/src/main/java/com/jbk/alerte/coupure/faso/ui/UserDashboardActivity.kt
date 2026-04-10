@@ -7,6 +7,7 @@ import android.location.Geocoder
 import androidx.appcompat.widget.SearchView
 import android.os.Bundle
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
@@ -40,7 +42,7 @@ class UserDashboardActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_user_dashboard)
 
-        // Gestion des marges système
+        // Gestion des marges système (EdgeToEdge)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -48,32 +50,29 @@ class UserDashboardActivity : AppCompatActivity() {
         }
 
         // Initialisation des vues
-        // Assure-toi que l'ID dans activity_user_dashboard.xml est bien searchViewDashboard
         searchView = findViewById(R.id.searchViewDashboard)
         recyclerView = findViewById(R.id.rvAlertes)
-
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         // Initialisation de l'adapter
         adapter = AlerteAdapter(
             listeTotale = listeAlertes,
-            isAdmin = false, // L'utilisateur ne peut pas gérer
+            isAdmin = false,
             onItemClick = null,
             onItemLongClick = null
         )
         recyclerView.adapter = adapter
 
-        // Configuration du filtrage (Recherche par quartier)
+        // Recherche
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean = false
-
+            override fun onQueryTextSubmit(query: String?) = false
             override fun onQueryTextChange(newText: String?): Boolean {
-                // Si c'est toujours rouge ici, passe à l'étape 2 ci-dessous
                 adapter.filter.filter(newText)
                 return true
             }
         })
 
+        // Bouton pour ouvrir la BottomSheet
         findViewById<FloatingActionButton>(R.id.btnOpenDialog).setOnClickListener {
             showSignalementDialog()
         }
@@ -86,12 +85,18 @@ class UserDashboardActivity : AppCompatActivity() {
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) return@addSnapshotListener
+
                 listeAlertes.clear()
                 snapshots?.forEach { doc ->
                     val alerte = doc.toObject(Alerte::class.java)
-                    listeAlertes.add(alerte)
+                    // ✅ CORRECTION 1 : On récupère l'ID du document Firestore !
+                    alerte?.id = doc.id
+                    if (alerte != null) {
+                        listeAlertes.add(alerte)
+                    }
                 }
-                adapter.notifyDataSetChanged()
+                // Utiliser updateData est mieux pour le filtre de recherche
+                adapter.updateData(listeAlertes)
             }
     }
 
@@ -102,7 +107,7 @@ class UserDashboardActivity : AppCompatActivity() {
         val btnValider = view.findViewById<Button>(R.id.btnValider)
         val etZone = view.findViewById<EditText>(R.id.etZone)
         val rgType = view.findViewById<RadioGroup>(R.id.rgType)
-        val btnGps = view.findViewById<ImageButton>(R.id.btnGps) // Ajoute un ImageButton dans ton XML si tu veux
+        val btnGps = view.findViewById<ImageButton>(R.id.btnGps)
 
         // LOGIQUE GPS
         btnGps?.setOnClickListener {
@@ -116,9 +121,14 @@ class UserDashboardActivity : AppCompatActivity() {
             if (quartier.isNotEmpty() && selectedId != -1) {
                 val radioButton = view.findViewById<RadioButton>(selectedId)
                 envoyerAlerte(quartier, radioButton.text.toString())
+
+                // Fermer le clavier avant de fermer la dialog
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+
                 dialog.dismiss()
             } else {
-                Toast.makeText(this, "Champs incomplets", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Veuillez remplir le quartier et le type", Toast.LENGTH_SHORT).show()
             }
         }
         dialog.setContentView(view)
@@ -129,7 +139,6 @@ class UserDashboardActivity : AppCompatActivity() {
     private fun recupererLocalisation(editText: EditText) {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        // VÉRIFICATION DES PERMISSIONS
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -141,38 +150,47 @@ class UserDashboardActivity : AppCompatActivity() {
             if (location != null) {
                 try {
                     val geocoder = Geocoder(this, Locale.getDefault())
-                    // Geocoder peut retourner une liste vide, on vérifie avec addresses?.firstOrNull()
                     val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
 
                     if (!addresses.isNullOrEmpty()) {
                         val address = addresses[0]
-                        // On cherche le quartier (subLocality) ou la ville (locality)
-                        val nomQuartier = address.subLocality ?: address.locality ?: "Quartier inconnu"
+                        // Priorité au quartier, sinon à la ville
+                        val nomQuartier = address.subLocality ?: address.locality ?: "Zone inconnue"
 
                         editText.setText(nomQuartier)
-                        Toast.makeText(this, "Localisé à : $nomQuartier", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "📍 Localisé à : $nomQuartier", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this, "Impossible de trouver le nom du quartier", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Adresse introuvable sur la carte", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
                     Log.e("GPS", "Erreur Geocoder", e)
-                    Toast.makeText(this, "Erreur lors de la récupération de l'adresse", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Erreur de géolocalisation", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(this, "Position introuvable. Activez le GPS et réessayez.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "GPS en cours de calibration, réessayez...", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun envoyerAlerte(quartier: String, type: String) {
+        // ✅ CORRECTION 2 : Harmonisation des majuscules pour l'Admin
+        val statutPropre = "EN COURS"
+
         val alerteData = hashMapOf(
             "quartier" to quartier,
             "type" to type,
             "timestamp" to FieldValue.serverTimestamp(),
-            "status" to "en_cours"
+            "status" to statutPropre, // Avant c'était "en_cours"
+            "auteurEmail" to (Firebase.auth.currentUser?.email ?: "Anonyme")
         )
+
         db.collection("alertes").add(alerteData)
+            .addOnSuccessListener {
+                // ✅ CORRECTION 3 : Confirmation visuelle pour l'utilisateur
+                Toast.makeText(this, "✅ Alerte signalée avec succès !", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "❌ Erreur : ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
-
-
 }

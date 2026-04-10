@@ -1,4 +1,4 @@
-package com.jbk.alerte.coupure.faso.ui
+package com.jbk.alerte.coupure.faso.adapters
 
 import android.content.Intent
 import android.util.Log
@@ -10,10 +10,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.jbk.alerte.coupure.faso.R
-// CORRECTION DE L'IMPORT ICI :
 import com.jbk.alerte.coupure.faso.models.Communique
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class CommuniqueAdapter(private var liste: List<Communique>) :
     RecyclerView.Adapter<CommuniqueAdapter.CommuniqueViewHolder>() {

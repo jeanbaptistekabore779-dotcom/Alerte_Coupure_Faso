@@ -1,49 +1,76 @@
 package com.jbk.alerte.coupure.faso.ui
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.jbk.alerte.coupure.faso.R
 
 class ProfileFragment : Fragment() {
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // On gonfle le layout XML du fragment
-        val view = inflater.inflate(R.layout.fragment_profile, container, false)
+        return inflater.inflate(R.layout.fragment_profile, container, false)
+    }
 
-        val auth = Firebase.auth
-        val user = auth.currentUser
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        // Liaison des vues
-        val tvNom = view.findViewById<TextView>(R.id.txtProfileName)
-        val tvEmail = view.findViewById<TextView>(R.id.txtProfileEmail)
-        val btnLogout = view.findViewById<Button>(R.id.btnLogout)
+        // 1. Liaison des vues avec les NOUVEAUX IDs
+        val ivPic = view.findViewById<com.google.android.material.imageview.ShapeableImageView>(R.id.ivProfilePic)
+        val txtName = view.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.txtProfileName)
+        val txtEmail = view.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.txtProfileEmail)
+        val txtVille = view.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.txtProfileVille)
+        val chipRole = view.findViewById<com.google.android.material.chip.Chip>(R.id.chipRole)
+        val btnLogout = view.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnLogout)
 
-        // Affichage des infos
-        tvNom.text = user?.displayName ?: "Jean Baptiste Kaboré"
-        tvEmail.text = user?.email ?: "Etudiant UJKZ"
+        // 2. Récupération des données Firestore
+        val uid = Firebase.auth.currentUser?.uid ?: return
+        FirebaseFirestore.getInstance().collection("users").document(uid).get()
+            .addOnSuccessListener { doc ->
+                if (doc.exists()) {
+                    val prenom = doc.getString("prenom") ?: ""
+                    val nom = doc.getString("nom") ?: ""
+                    txtName.text = "$prenom $nom".trim()
+                    txtEmail.text = doc.getString("email") ?: ""
+                    txtVille.text = "Ville : ${doc.getString("ville") ?: "Non définie"}"
 
-        // Gestion de la déconnexion
+                    // Gestion du rôle (Admin ou Citoyen)
+                    val role = doc.getString("role") ?: "USER"
+                    if (role == "ADMIN") {
+                        chipRole.text = "ADMINISTRATEUR"
+                        chipRole.setChipBackgroundColorResource(R.color.purple_500)
+                        chipRole.setTextColor(resources.getColor(android.R.color.white, null))
+                    } else {
+                        chipRole.text = "CITOYEN"
+                    }
+
+                    // Chargement de la vraie photo avec Glide
+                    val photoUrl = doc.getString("photoUrl")
+                    if (!photoUrl.isNullOrEmpty()) {
+                        Glide.with(this).load(photoUrl).into(ivPic)
+                    }
+                }
+            }
+
+        // 3. Action du bouton Déconnexion
         btnLogout.setOnClickListener {
-            auth.signOut()
-            val intent = Intent(requireContext(), LoginActivity::class.java)
+            Firebase.auth.signOut()
+            Toast.makeText(context, "Déconnexion réussie", Toast.LENGTH_SHORT).show()
+
+            // Redirection vers Login et fermeture de toutes les autres activités
+            val intent = Intent(context, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
-
-        return view
     }
 }
