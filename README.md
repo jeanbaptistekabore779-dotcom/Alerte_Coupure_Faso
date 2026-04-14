@@ -1,64 +1,68 @@
-        🇧🇫 Alerte Coupure Faso
-    
-Application mobile collaborative de signalement des délestages en temps réel au Burkina Faso.
+# 🇧🇫 Alerte Coupure Faso
 
-KotlinFirebaseAndroid
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.9+-blue.svg)](https://kotlinlang.org)
+[![Firebase](https://img.shields.io/badge/Firebase-Realtime-orange.svg)](https://firebase.google.com)
+[![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](https://developer.android.com)
 
-    📖 Contexte du projet
-Dans un contexte marqué par des périodes de forte chaleur et des délestages fréquents, il est souvent difficile pour les populations de savoir si une coupure d'électricité est localisée ou généralisée. Alerte Coupure Faso est une application de crowdsourcing qui permet aux citoyens de signaler l'état du réseau électrique et aux autorités de communiquer officiellement.
+**Alerte Coupure Faso** est une plateforme mobile collaborative de signalement des délestages en temps réel au Burkina Faso. Ce projet utilise le *crowdsourcing* pour offrir une visibilité claire sur l'état du réseau électrique national.
 
-Ce projet a été développé dans le cadre de la Licence 3 Informatique (L3S6) à l'Université Joseph KI-ZERBO (UJKZ).
+> 🎓 *Projet développé dans le cadre de la Licence 3 Informatique (L3S6) à l'Université Joseph KI-ZERBO (UJKZ).*
 
-    👥 L'Équipe
-Ce projet a été réalisé en binôme par :
+---
 
-Jean Baptiste Kaboré : Lead Developer (Architecture Android, Firebase, Interface).
-Alima Kagambega : Backend & Intégration Qualité (Optimisation, Tests, Documentation).
-    ✨ Fonctionnalités
-    📱 Pour les Citoyens (Utilisateurs)
-Tableau de bord dynamique : Visualisation des coupures en cours et résolues avec statistiques en temps réel.
-Signalement intelligent (GPS) : Signalement rapide via une BottomSheet avec détection automatique du quartier grâce à l'API de Géolocalisation Android.
-Recherche avancée : Filtrage instantané des alertes par quartier.
-Communiqués Officiels : Consultation des annonces de la Sonabel avec partage direct vers WhatsApp (formatage Markdown intégré).
-Profil personnalisé : Gestion des informations et historique local (Room).
-    🛡️ Pour l'Administrateur (Sonabel)
-Rôle automatique : L'authentification avec un email @sonabel.bf bascule automatiquement l'utilisateur en mode Administrateur.
-Modération des alertes : Changement de statut (EN COURS / RÉSOLU / MAINTENANCE) ou suppression en un clic.
-Gestion des utilisateurs : Possibilité de bloquer ou supprimer des comptes citoyens.
-Publication officielle : Envoi de communiqués officiels priorités aux utilisateurs.
-🛠️ Stack Technique & Architecture
-Le projet suit une architecture modulaire stricte (proche de MVVM) pour séparer la logique métier de l'interface :
+## Contexte du projet
+Dans un contexte marqué par de fortes chaleurs et des délestages fréquents, il est souvent difficile de savoir si une coupure est localisée ou généralisée. Cette application permet aux citoyens de signaler l'état du réseau et à la **Sonabel** de communiquer officiellement de manière ciblée.
 
-Langage : Kotlin 100%
-UI & Frontend : XML (Material Design 3), ViewBinding, Fragments, RecyclerView, SwipeRefreshLayout.
-Backend & BDD :
-Firebase Authentication (Login/Register)
-Cloud Firestore (Base de données NoSQL temps réel)
-Firebase Storage (Stockage photos de profil)
-Firebase Messaging (Notifications push)
-Local (Hors-ligne) : Room Database (Synchronisation locale pour l'historique).
-Outils : Glide (Images), Geocoder (Localisation GPS), Coroutine/Flow.
-Structure des dossiers :
+---
 
-com.jbk.alerte.coupure.faso/├── ui/            # Activités, Fragments et Adapters├── models/        # Data classes (User, Alerte, Communique)├── data/          # Room (DAO, Database) & Repository└── services/      # Notifications Firebase
-    🚀 Installation et Test
-Prérequis
-Android Studio (Dernière version stable)
-Un compte Firebase
-Étapes d'installation
-Cloner le dépôt
-bash
+## Fonctionnalités
 
-git clone https://github.com/jeanbaptistekabore779-dotcom/Alerte_Coupure_Faso.git
-Configuration Firebase
-Créer un projet sur la Console Firebase.
-Activer Authentication (Email/Mot de passe).
-Créer une base de données Firestore.
-Télécharger le fichier google-services.json et le placer dans le dossier app/.
-Lancement
-Ouvrir le projet dans Android Studio.
-Attendre le Sync Project with Gradle Files.
-Lancer l'application sur un émulateur (API 24+) ou un appareil physique.
-    📜 Licence
-Ce projet est réalisé à des fins académiques dans le cadre de l'UJKZ.
-© 2026 - Jean Baptiste Kaboré & Alima Kagambega.
+### Pour les Citoyens
+* **Tableau de bord dynamique :** Visualisation des coupures en cours/résolues avec statistiques.
+* **Signalement intelligent (GPS) :** Détection automatique du quartier via l'API Geocoder d'Android.
+* **Recherche avancée :** Filtrage instantané par quartier ou ville.
+* **Communiqués Officiels :** Consultation et partage (WhatsApp/SMS) des notes de la Sonabel.
+* **Mode Hors-ligne :** Mise en cache des données via **Room Database**.
+
+###  Pour l'Administrateur (Mode Sonabel)
+* **Rôle automatique :** L'authentification via un email `@sonabel.bf` débloque l'accès Admin.
+* **Modération :** Mise à jour du statut des alertes (EN COURS, MAINTENANCE, RÉSOLU).
+* **Gestion Utilisateurs :** Modération des comptes signalés.
+* **Publication :** Envoi de notifications push via Firebase Cloud Messaging.
+
+---
+
+## Stack Technique & Architecture
+Le projet suit les principes de l'**Architecture Clean (proche de MVVM)** pour une maintenance simplifiée.
+
+* **Langage :** Kotlin
+* **Interface :** Material Design 3, ViewBinding, Navigation Components.
+* **Backend :** * *Firebase Auth :* Gestion des sessions.
+    * *Firestore :* Base de données NoSQL temps réel.
+    * *Cloud Messaging :* Notifications d'alertes.
+* **Local Data :** Room Database (Persistence).
+
+---
+
+## L'Équipe
+* **Jean Baptiste Kaboré** : Lead Developer (Architecture Android, Firebase, UI/UX).
+* **Alima Kagambega** : Backend & Assurance Qualité (Optimisation, Tests, Documentation).
+
+---
+
+## Installation
+1.  **Cloner le dépôt :**
+    ```bash
+    git clone [https://github.com/jeanbaptistekabore779-dotcom/Alerte_Coupure_Faso.git](https://github.com/jeanbaptistekabore779-dotcom/Alerte_Coupure_Faso.git)
+    ```
+2.  **Configuration Firebase :**
+    * Ajoutez votre fichier `google-services.json` dans le dossier `app/`.
+    * Activez *Authentication* et *Firestore* sur la console Firebase.
+3.  **Lancement :**
+    * Ouvrez sur Android Studio et synchronisez Gradle.
+
+---
+
+## Licence & Droits
+Ce projet est réalisé à des fins académiques.
+© 2026 - **Jean Baptiste Kaboré & Alima Kagambega**. Tous droits réservés.
