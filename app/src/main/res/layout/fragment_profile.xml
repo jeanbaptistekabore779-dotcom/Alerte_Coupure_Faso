@@ -56,7 +56,7 @@
                 android:layout_marginTop="8dp"
                 android:clickable="false"
                 app:chipBackgroundColor="#E3F2FD"
-                app:chipTextColor="#1976D2"
+                android:textColor="#1976D2"
                 app:chipCornerRadius="12dp"/>
 
             <!-- Séparateur -->

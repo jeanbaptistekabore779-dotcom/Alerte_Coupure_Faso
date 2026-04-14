@@ -10,9 +10,10 @@ class Converters {
     @TypeConverter
     fun toType(value: String): TypeSignalement {
         return try {
-            TypeSignalement.valueOf(value)
-        } catch (e: IllegalArgumentException) {
-            TypeSignalement.COUPURE // Valeur par défaut en cas d'erreur
+            // .uppercase() transforme "Retour" en "RETOUR" avant de chercher
+            TypeSignalement.valueOf(value.uppercase())
+        } catch (e: Exception) {
+            TypeSignalement.COUPURE // Sécurité si la valeur est vraiment inconnue
         }
     }
 }

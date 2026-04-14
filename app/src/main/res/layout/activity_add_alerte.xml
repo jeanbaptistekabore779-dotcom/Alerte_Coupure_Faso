@@ -4,94 +4,126 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA"> <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:background="#F8F9FA">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nouvelle Alerte"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#212529"
-        android:layout_marginBottom="8dp"/>
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Remplissez les détails de la coupure ci-dessous."
-        android:textColor="#6C757D"
-        android:layout_marginBottom="24dp"/>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:hint="Quartier ou Zone"
-        app:startIconDrawable="@android:drawable/ic_menu_mylocation"
-        app:boxStrokeColor="#0d6efd"
-        app:hintTextColor="#0d6efd">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etQuartier"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapSentences" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:text="Nouvelle Alerte"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#212529"
+            android:layout_marginBottom="8dp"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:hint="Type d'incident"
-        app:startIconDrawable="@android:drawable/ic_dialog_info">
-
-        <AutoCompleteTextView
-            android:id="@+id/autoCompleteType"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none"
-            android:text="Coupure d'électricité" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:text="Remplissez les détails de la coupure ci-dessous."
+            android:textColor="#6C757D"
+            android:layout_marginBottom="24dp"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:hint="Description (Optionnel)"
-        app:counterEnabled="true"
-        app:counterMaxLength="200">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etDescription"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="top"
-            android:lines="4"
-            android:inputType="textMultiLine" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginBottom="16dp"
+            android:hint="Quartier ou Zone"
+            app:startIconDrawable="@android:drawable/ic_menu_mylocation">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnPublier"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Publier l'alerte"
-        android:textAllCaps="false"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:cornerRadius="8dp"
-        android:backgroundTint="#0d6efd" /> <com.google.android.material.button.MaterialButton
-    android:id="@+id/btnAnnuler"
-    style="@style/Widget.MaterialComponents.Button.TextButton"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:text="Annuler"
-    android:textColor="#dc3545" /> </LinearLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etQuartier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="Type d'incident"
+            app:startIconDrawable="@android:drawable/ic_dialog_info">
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAjouterPhoto"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Prendre une photo (Optionnel)"
+            app:icon="@android:drawable/ic_menu_camera"
+            app:strokeColor="#6C757D"
+            android:textColor="#6C757D"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#DEE2E6">
+
+            <ImageView
+                android:id="@+id/ivApercu"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                android:contentDescription="Aperçu de la photo" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:hint="Description (Optionnel)"
+            app:counterEnabled="true"
+            app:counterMaxLength="200">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:lines="4"
+                android:inputType="textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPublier"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Publier l'alerte"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="8dp"
+            android:backgroundTint="#0d6efd" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAnnuler"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Annuler"
+            android:textColor="#dc3545" />
+
+    </LinearLayout>
 </androidx.core.widget.NestedScrollView>

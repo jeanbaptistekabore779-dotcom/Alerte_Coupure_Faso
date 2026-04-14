@@ -71,23 +71,18 @@ class LoginActivity : AppCompatActivity() {
         db.collection("users").document(uid).get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    val role = document.getString("role") ?: "USER"
                     val estBloque = document.getBoolean("estBloque") ?: false
 
                     if (estBloque) {
                         Toast.makeText(this, "Ce compte est suspendu.", Toast.LENGTH_LONG).show()
                         auth.signOut()
                     } else {
-                        val destination = if (role == "ADMIN") {
-                            AdminDashboardActivity::class.java
-                        } else {
-                            AccueilActivity::class.java
-                        }
-                        startActivity(Intent(this, destination))
+                        // TOUT LE MONDE va vers AccueilActivity
+                        val intent = Intent(this, AccueilActivity::class.java)
+                        startActivity(intent)
                         finish()
                     }
                 } else {
-                    // Document inexistant : on envoie à l'accueil par défaut
                     startActivity(Intent(this, AccueilActivity::class.java))
                     finish()
                 }

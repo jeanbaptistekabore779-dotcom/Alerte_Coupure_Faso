@@ -173,20 +173,22 @@ class UserDashboardActivity : AppCompatActivity() {
     }
 
     private fun envoyerAlerte(quartier: String, type: String) {
-        // ✅ CORRECTION 2 : Harmonisation des majuscules pour l'Admin
+        // Récupération de l'utilisateur connecté
+        val user = Firebase.auth.currentUser
+
         val statutPropre = "EN COURS"
 
         val alerteData = hashMapOf(
             "quartier" to quartier,
             "type" to type,
             "timestamp" to FieldValue.serverTimestamp(),
-            "status" to statutPropre, // Avant c'était "en_cours"
-            "auteurEmail" to (Firebase.auth.currentUser?.email ?: "Anonyme")
+            "status" to statutPropre,
+            "auteurEmail" to (user?.email ?: "Anonyme"), // <-- N'oublie pas la virgule ici !
+            "auteurPhotoUrl" to (user?.photoUrl?.toString() ?: "") // <-- Correction du user
         )
 
         db.collection("alertes").add(alerteData)
             .addOnSuccessListener {
-                // ✅ CORRECTION 3 : Confirmation visuelle pour l'utilisateur
                 Toast.makeText(this, "✅ Alerte signalée avec succès !", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener { e ->

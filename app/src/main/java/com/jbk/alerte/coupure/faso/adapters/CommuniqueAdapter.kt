@@ -35,10 +35,10 @@ class CommuniqueAdapter(private var liste: List<Communique>) :
         holder.tvTitre.text = item.titre
         holder.tvMsg.text = item.message
 
-        // Formatage de la date en français pour le Burkina
-        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE)
-        holder.tvDate.text = sdf.format(Date(item.timestamp))
-
+        // Correction pour gérer le Timestamp de Firestore
+        val dateLocale = item.date?.toDate() ?: Date()
+        val sdf = SimpleDateFormat("dd MMMM yyyy 'à' HH:mm", Locale.FRANCE)
+        holder.tvDate.text = sdf.format(dateLocale)
         // Logique de partage WhatsApp / SMS
         holder.btnShare.setOnClickListener {
             try {

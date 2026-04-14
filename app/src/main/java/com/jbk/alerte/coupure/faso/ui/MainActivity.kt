@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jbk.alerte.coupure.faso.R
 import com.jbk.alerte.coupure.faso.databinding.ActivityMainBinding
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 
 class MainActivity : AppCompatActivity() {
 
@@ -78,10 +78,12 @@ class MainActivity : AppCompatActivity() {
 
                     val photoUrl = doc.getString("photoUrl")
                     if (!photoUrl.isNullOrEmpty()) {
-                        Picasso.get()
+                        // Utilisation de Glide (déjà importé à la ligne 11)
+                        Glide.with(this@MainActivity)
                             .load(photoUrl)
-                            .placeholder(R.drawable.ic_person) // Icône par défaut pendant le chargement
-                            .into(ivPhoto as ImageView)
+                            .placeholder(R.drawable.ic_person)
+                            .circleCrop() // Optionnel : pour que l'image soit ronde dans le menu
+                            .into(ivPhoto)
                     }
                 }
             }

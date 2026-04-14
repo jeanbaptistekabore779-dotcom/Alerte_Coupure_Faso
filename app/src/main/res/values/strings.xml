@@ -1,31 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Alerte Coupure Faso</string>
-    <string name="todo">TODO</string>
-    <string name="_31_03_2026">31/03/2026</string>
+    <string name="alerte_coupure_faso">Alerte Coupure Faso</string> <string name="app_slogan">Un jour de plus pour rester éclairé !</string>
+    <string name="logo_sonabel_desc">Logo officiel de la SONABEL</string>
 
     <string name="navigation_drawer_open">Ouvrir le menu de navigation</string>
     <string name="navigation_drawer_close">Fermer le menu de navigation</string>
-    <string name="salut_format">Salut %1$s</string>
+    <string name="dashboard">Tableau de bord</string>
+    <string name="panneau_administrateur">Administration</string>
+    <string name="compte">Mon Profil</string>
+    <string name="d_connexion">Déconnexion</string>
+    <string name="mes_alertes">Mes Alertes</string>
 
-    <string name="connectez_vous_pour_signaler_ou_voir_les_alertes">Connectez-vous pour signaler ou voir les alertes</string>
+    <string name="salut_format">Salut, %1$s !</string>
+    <string name="default_citoyen">Citoyen</string>
+    <string name="hint_recherche_quartier">Rechercher par quartier…</string>
+
+    <string name="titre_communiques">Communiqués Officiels</string>
+    <string name="desc_voir_tout">Voir tous les communiqués</string>
+    <string name="communiqu_officiel_sonabel">Communiqué Officiel SONABEL</string>
+
+    <string name="label_coupures_actives">Coupures actives</string>
+    <string name="label_retablies">Rétablies</string>
+    <string name="valeur_stats_zero">00</string>
+    <string name="zero_stats">00</string>
+
+    <string name="titre_signalements_recents">Signalements récents</string>
+    <string name="desc_fab_signaler">Signaler une nouvelle coupure ou un retour</string>
+    <string name="desc_fab_ajouter">Signaler une nouvelle coupure</string>
+    <string name="vous_n_avez_pas_encore_de_signalements">Vous n’avez pas encore de signalements</string>
+
+    <string name="connectez_vous_pour_signaler_ou_voir_les_alertes">Connectez-vous pour voir les alertes</string>
     <string name="email">Email</string>
     <string name="mot_de_passe">Mot de passe</string>
     <string name="se_connecter">Se Connecter</string>
-    <string name="pas_encore_de_compte_s_inscrire">Pas encore de compte ? S\'inscrire</string>
+    <string name="pas_encore_de_compte_s_inscrire">Pas encore de compte ? S’inscrire</string>
     <string name="cr_er_un_compte">Créer un compte</string>
-    <string name="s_inscrire">S\'inscrire</string>
+    <string name="s_inscrire">S’inscrire</string>
 
-    <string name="alerte_coupure_faso">Alerte Coupure Faso</string>
     <string name="signaler_un_v_nement">Signaler un événement</string>
     <string name="signaler_une_nouvelle_coupure">Signaler une nouvelle coupure</string>
-    <string name="ajouter_une_coupure">Ajouter une coupure</string>
     <string name="nom_du_quartier_ex_pissy_wemtenga">Nom du quartier (ex: Pissy, Wemtenga)</string>
-    <string name="quartier_ex_pissy">Quartier (ex: Pissy)</string>
-    <string name="coupure_d_lectricit">Coupure d\'électricité</string>
+    <string name="coupure_d_lectricit">Coupure d’électricité</string>
+    <string name="description_optionnelle">Description (Optionnel)</string>
+    <string name="ajouter_une_photo">Ajouter une photo</string>
+    <string name="voir_sur_carte">Localiser</string>
     <string name="partager">Partager</string>
-    <string name="voir_sur_carte">Voir sur carte</string>
-    <string name="ic_ne_de_statut">Icône de statut</string>
 
     <string name="alerte_status_format">Statut : %1$s (%2$s)</string>
     <string name="alerte_date_format">Signalé le : %1$s</string>
@@ -33,22 +53,13 @@
     <string name="date_inconnue">Date inconnue</string>
     <string name="zone_inconnue">Zone inconnue</string>
 
-    <string name="tableau_de_bord_sonabel">Tableau de Bord SONABEL</string>
-    <string name="communiqu_officiel_sonabel">Communiqué Officiel SONABEL</string>
-    <string name="publier_un_communiqu">Publier un communiqué</string>
-    <string name="publier_communiqu">Publier Communiqué</string>
+    <string name="tableau_de_bord_sonabel">Tableau de Bord SONABEL</string> <string name="publier_un_communiqu">Publier un communiqué</string>
+    <string name="publier_communiqu">Publier Communiqué</string> <string name="titre_du_communiqu">Titre du Communiqué</string>
+    <string name="titre_ex_travaux_de_maintenance">Titre (ex: Travaux de maintenance)</string> <string name="message_d_taill">Message détaillé…</string>
     <string name="publier">PUBLIER</string>
-    <string name="titre_du_communiqu">Titre du Communiqué</string>
-    <string name="titre_ex_travaux_de_maintenance">Titre (ex: Travaux de maintenance)</string>
-    <string name="message_d_taill">Message détaillé...</string>
-    <string name="le_contenu_du_message_officiel_appara_tra_ici">Le contenu du message officiel</string>
-    <string name="dashboard">Dashboard</string>
-    <string name="panneau_administrateur">Panneau Administrateur</string>
-    <string name="compte">Compte</string>
-    <string name="d_connexion">Déconnexion</string>
-    <string name="mes_alertes">Mes Alertes</string>
-    <style name="Theme.Alerte_Coupure_Faso.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
+
+    <string name="todo">À faire</string>
+
+    <string name="publier_communique">Publier un communiqué</string>
+
 </resources>

@@ -98,7 +98,27 @@ class AdminDashboardActivity : AppCompatActivity() {
                 binding.swipeRefresh.isRefreshing = false
                 if (snapshots != null) {
                     val list = snapshots.documents.mapNotNull { doc ->
-                        doc.toObject(Alerte::class.java)?.apply { id = doc.id }
+                        try {
+                            val timestamp: com.google.firebase.Timestamp? = when (val raw = doc.get("timestamp")) {
+                                is com.google.firebase.Timestamp -> raw
+                                is Long -> com.google.firebase.Timestamp(raw / 1000, ((raw % 1000) * 1_000_000).toInt())
+                                is Double -> com.google.firebase.Timestamp(raw.toLong() / 1000, 0)
+                                else -> null
+                            }
+                            Alerte(
+                                id = doc.id,
+                                quartier = doc.getString("quartier") ?: "",
+                                type = doc.getString("type") ?: "",
+                                ville = doc.getString("ville") ?: "Ouagadougou",
+                                status = doc.getString("status") ?: "EN COURS",
+                                timestamp = timestamp,
+                                auteurEmail = doc.getString("auteurEmail") ?: "",
+                                auteurPhotoUrl = doc.getString("auteurPhotoUrl")
+                            )
+                        } catch (e: Exception) {
+                            android.util.Log.e("ADMIN", "Doc ignoré: ${e.message}")
+                            null
+                        }
                     }
                     actualiserVisibilite(list.isEmpty())
                     alerteAdapter.updateData(list)

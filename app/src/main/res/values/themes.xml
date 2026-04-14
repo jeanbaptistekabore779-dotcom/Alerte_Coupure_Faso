@@ -1,19 +1,29 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Base.Theme.Alerte_Coupure_Faso" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">#0d6efd</item>       <item name="colorOnPrimary">#FFFFFF</item>
+    <style name="Theme.Alerte_Coupure_Faso" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#1976D2</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorPrimaryContainer">#1565C0</item>
+        <item name="colorOnPrimaryContainer">@android:color/white</item>
 
-        <item name="colorSecondary">#6c757d</item>      <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSecondary">#FFC107</item>
+        <item name="colorOnSecondary">@android:color/black</item>
 
-        <item name="colorError">#dc3545</item>          <item name="android:statusBarColor">#0d6efd</item>
-        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">#1565C0</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
     </style>
 
-    <style name="Theme.Alerte_Coupure_Faso" parent="Base.Theme.Alerte_Coupure_Faso" />
+    <style name="Theme.Alerte_Coupure_Faso.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 
-    <style name="ShapeAppearance.Alerte.Circle" parent="ShapeAppearance.Material3.SmallComponent">
+    <style name="ShapeAppearance.MaterialComponents.CircleImageView" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="Theme.AlerteCoupureFaso" parent="Theme.Alerte_Coupure_Faso">
     </style>
 
 </resources>

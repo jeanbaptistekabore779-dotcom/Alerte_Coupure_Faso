@@ -1,4 +1,4 @@
-package com.jbk.alerte.coupure.faso.ui
+package com.jbk.alerte.coupure.faso.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,10 +8,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.Chip
+import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.jbk.alerte.coupure.faso.R
+import com.jbk.alerte.coupure.faso.ui.LoginActivity
 
 class ProfileFragment : Fragment() {
 
@@ -26,12 +31,12 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 1. Liaison des vues avec les NOUVEAUX IDs
-        val ivPic = view.findViewById<com.google.android.material.imageview.ShapeableImageView>(R.id.ivProfilePic)
-        val txtName = view.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.txtProfileName)
-        val txtEmail = view.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.txtProfileEmail)
-        val txtVille = view.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.txtProfileVille)
-        val chipRole = view.findViewById<com.google.android.material.chip.Chip>(R.id.chipRole)
-        val btnLogout = view.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnLogout)
+        val ivPic = view.findViewById<ShapeableImageView>(R.id.ivProfilePic)
+        val txtName = view.findViewById<MaterialTextView>(R.id.txtProfileName)
+        val txtEmail = view.findViewById<MaterialTextView>(R.id.txtProfileEmail)
+        val txtVille = view.findViewById<MaterialTextView>(R.id.txtProfileVille)
+        val chipRole = view.findViewById<Chip>(R.id.chipRole)
+        val btnLogout = view.findViewById<MaterialButton>(R.id.btnLogout)
 
         // 2. Récupération des données Firestore
         val uid = Firebase.auth.currentUser?.uid ?: return

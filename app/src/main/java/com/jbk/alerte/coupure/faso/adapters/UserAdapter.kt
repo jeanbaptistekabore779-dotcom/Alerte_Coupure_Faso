@@ -1,5 +1,6 @@
 package com.jbk.alerte.coupure.faso.adapters
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -7,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.google.android.material.button.MaterialButton
 import com.jbk.alerte.coupure.faso.R
 import com.jbk.alerte.coupure.faso.models.User
 
 class UserAdapter(
-    private var users: List<User>, // Changé en var pour pouvoir mettre à jour la liste
+    private var users: List<User>,
     private val onBlockClick: (User) -> Unit,
     private val onDeleteClick: (User) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
@@ -19,38 +22,41 @@ class UserAdapter(
     class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvNom: TextView = view.findViewById(R.id.tvNomUser)
         val tvEmail: TextView = view.findViewById(R.id.tvEmailUser)
-        val btnAction: Button = view.findViewById(R.id.btnActionBloquer)
+        val btnAction: MaterialButton = view.findViewById(R.id.btnActionBloquer) // Utilisation de MaterialButton
+        val imgAvatar: android.widget.ImageView = view.findViewById(R.id.imgUserAvatar)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_user, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
         return UserViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val user = users[position]
 
-        // On concatène Nom et Prénom pour un meilleur affichage
-        val nomComplet = "${user.nom} ${user.prenom}".trim()
-        holder.tvNom.text = if (nomComplet.isNotEmpty()) nomComplet else "Utilisateur sans nom"
+        // Affichage du nom (Vérifie que ton modèle User possède bien le champ 'prenom')
+        val nomComplet = "${user.nom}".trim()
+        holder.tvNom.text = if (nomComplet.isNotEmpty()) nomComplet else "Utilisateur"
         holder.tvEmail.text = user.email
 
-        // 1. Gestion dynamique du bouton Bloquer/Débloquer
+        // Gestion du bouton avec backgroundTint pour MaterialButton
         if (user.estBloque) {
             holder.btnAction.text = "Débloquer"
-            holder.btnAction.setBackgroundColor(Color.parseColor("#4CAF50")) // Vert plus doux
+            holder.btnAction.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#4CAF50"))
         } else {
             holder.btnAction.text = "Bloquer"
-            holder.btnAction.setBackgroundColor(Color.parseColor("#F44336")) // Rouge plus doux
+            holder.btnAction.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F44336"))
         }
 
-        // 2. Action au clic sur le bouton
-        holder.btnAction.setOnClickListener {
-            onBlockClick(user)
-        }
+        // Chargement de l'image (Ne pas oublier Glide pour le rendu pro)
+        Glide.with(holder.itemView.context)
+            .load(user.photoUrl)
+            .placeholder(R.drawable.ic_person)
+            .circleCrop()
+            .into(holder.imgAvatar)
 
-        // 3. Action au clic long pour la suppression
+        holder.btnAction.setOnClickListener { onBlockClick(user) }
+
         holder.itemView.setOnLongClickListener {
             onDeleteClick(user)
             true
@@ -59,7 +65,6 @@ class UserAdapter(
 
     override fun getItemCount() = users.size
 
-    // CRUCIAL : Permet de rafraîchir la liste quand Firestore change
     fun updateData(newUsers: List<User>) {
         this.users = newUsers
         notifyDataSetChanged()

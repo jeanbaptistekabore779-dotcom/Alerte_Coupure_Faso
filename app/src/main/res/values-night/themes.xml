@@ -1,7 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Alerte_Coupure_Faso" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+
+    <style name="Theme.Alerte_Coupure_Faso" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#90CAF9</item>
     </style>
+
+    <style name="Theme.Alerte_Coupure_Faso.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
 </resources>
